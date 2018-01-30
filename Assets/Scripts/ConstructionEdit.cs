@@ -103,7 +103,8 @@ public class ConstructionEdit : MonoBehaviour
         GameObject secondGO = MakeJoint(joint, startPoint);
         secondGO.GetComponent<CircleCollider2D>().enabled = false;
 
-        while (!Input.GetKeyDown(KeyCode.Mouse0)) {
+        while (true) {
+            
             Vector2 targ = WorldMouse();
             UpdateClamping(clampingGO.transform, startPoint, targ);
             secondGO.transform.position = targ;
@@ -117,12 +118,15 @@ public class ConstructionEdit : MonoBehaviour
                 editmode = false;
                 yield break;
             }
-            yield return new WaitForFixedUpdate();
+
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+                break;
+
+            yield return null;
+
         }
-        //проверяем где отпустили
-        
+        //если под курсором ось - подключаем к ней
         GameObject selected = GetJoint();
-        //если под курсором ось значит клеим к ней
         if (selected != null)
         {
             Destroy(secondGO);
@@ -149,9 +153,6 @@ public class ConstructionEdit : MonoBehaviour
                 yield break;
             }
         }
-
-
-
         //подключаем физику
         if (spring) {
             SpringJoint2D joint1_ = firstGO.AddComponent<SpringJoint2D>();
@@ -177,7 +178,7 @@ public class ConstructionEdit : MonoBehaviour
             }
         }
         //
-        OnCompleteCreate();
+       // OnCompleteCreate();
         editmode = false;
     }
 
@@ -191,9 +192,9 @@ public class ConstructionEdit : MonoBehaviour
         clamping.position = pos;
         clamping.localScale = new Vector3(dir.magnitude, 1, 1);
     }
-    void OnCompleteCreate() {
-
-    }
+    //void OnCompleteCreate() {
+    //
+    //}
 
 
     void CreateWheel(GameObject axis) {
